@@ -1,8 +1,22 @@
----
-- name: Install Python Modules
+- name: Install Python Modules and Display Summary
   hosts: localhost
   gather_facts: false
 
-  roles:
-    - python_modules
+  tasks:
+    - name: Include Python Modules Role
+      include_role:
+        name: python_modules
 
+    - name: Display Installed Python Modules
+      shell: "pip3 freeze"
+      register: installed_modules
+      changed_when: false
+
+    - name: Format and Print Summary
+      debug:
+        msg: |-
+          Installed Python Modules:
+          {%- set modules_per_line = 5 %}
+          {%- for i in range(0, installed_modules.stdout_lines | length, modules_per_line) %}
+          {{- installed_modules.stdout_lines[i:i+modules_per_line] | join(', ') | indent(2) }}
+          {%- endfor %}
