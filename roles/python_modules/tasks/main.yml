@@ -1,0 +1,6 @@
+---
+- name: Install Python modules
+  pip:
+    name: "{{ item }}"
+    executable: pip3
+  loop: "{{ PYTHON_MODULES }}"

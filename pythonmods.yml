@@ -1,0 +1,8 @@
+---
+- name: Install Python Modules
+  hosts: localhost
+  gather_facts: false
+
+  roles:
+    - python_modules
+
