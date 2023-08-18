@@ -1,8 +1,8 @@
 ---
 - name: Disable Swap
-  ansible.builtin.command: swapoff -a
+  shell: swapoff -a
   become: true
-  become_method: sudo
+  become_user: root
 
 - name: Remove Swap Entry from /etc/fstab
   lineinfile:
@@ -12,7 +12,5 @@
   when: ansible_swaptotal_mb > 0  # Only remove if swap is present
 
 - name: Remove Swap File
-  ansible.builtin.file:
-    path: /swapfile
-    state: absent
+  shell: rm -f /swapfile
   when: ansible_swaptotal_mb > 0  # Only remove if swap is present
