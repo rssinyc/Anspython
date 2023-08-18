@@ -1,0 +1,18 @@
+---
+- name: Identify Free Space in VG
+  shell: vgs --noheadings -o vg_free --units g rootvg
+  register: vg_free
+  changed_when: false
+
+- name: Extend Logical Volume
+  shell: lvextend -L +50G /dev/rootvg/varvol
+  when: vg_free.stdout_lines[0] | int > 50
+  changed_when: vg_free.stdout_lines[0] | int > 50
+
+- name: Resize ext4 Filesystem
+  shell: resize2fs /dev/rootvg/varvol
+  when: vg_free.stdout_lines[0] | int > 50
+  changed_when: vg_free.stdout_lines[0] | int > 50
+
+- name: Verify /var/ Size
+  shell: df -h /var
